@@ -5,8 +5,9 @@ class AppLifecycleManager extends ChangeNotifier{
 
   /// change lifecycle
   void changeLifecycle(AppLifecycleState lifecycle){
-    print("lifecycle----------------------$lifecycle");
     appLifecycleState=lifecycle;
     notifyListeners();
   }
+
+
 }

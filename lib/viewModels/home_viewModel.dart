@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
@@ -9,7 +8,6 @@ import 'package:task_stajirovka/models/imageModel.dart';
 import 'package:task_stajirovka/service/db_service.dart';
 import 'package:task_stajirovka/service/internet_service.dart';
 import 'package:video_player/video_player.dart';
-
 import 'app_lifecycle_manager_viewModel.dart';
 
 class HomeViewModel extends ChangeNotifier {
@@ -50,23 +48,26 @@ class HomeViewModel extends ChangeNotifier {
 
   /// play video
   void playVideo(BuildContext context) {
-    print("play vedio");
     if(context.read<AppLifecycleManager>().appLifecycleState == AppLifecycleState.resumed)
       {if(isPlayVideo==false) {
-        print("play boshlandi");
         isPlayVideo=true;
         notifyListeners();
         videoController = VideoPlayerController.network(
           'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
         );
         videoController.addListener(() { if(!videoController.value.isPlaying){
+          print("isPlaying yugadi");
           isPlayVideo=false;
           notifyListeners();
-        }});
+        }
+        if(context.read<AppLifecycleManager>().appLifecycleState == AppLifecycleState.paused){
+          videoController.dispose();
+        }
+        });
         videoController.play();
       }}
     else {
-      videoController.pause();
+      videoController.dispose();
     }
 
   }
@@ -86,7 +87,6 @@ class HomeViewModel extends ChangeNotifier {
       onReceiveProgress: (recivedBytes, totalBytes) {
         progress = recivedBytes / totalBytes;
         notifyListeners();
-        print(progress);
         if(progress==1.0){
           isStartDownLoad=false;
           notifyListeners();
